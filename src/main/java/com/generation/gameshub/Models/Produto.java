@@ -29,16 +29,21 @@ public class Produto {
     @JsonIgnoreProperties("produto")
     private Categoria categoria;
 
+    @ManyToOne
+    @JsonIgnoreProperties("produto")
+    private Usuario usuario;
+
     public Produto() {
     }
 
-    public Produto(Long id, String nome, Float preco, String descricao, String distribuidor, Categoria categoria) {
+    public Produto(Long id, String nome, Float preco, String descricao, String distribuidor, Categoria categoria, Usuario usuario) {
         this.id = id;
         this.nome = nome;
         this.preco = preco;
         this.descricao = descricao;
         this.distribuidor = distribuidor;
         this.categoria = categoria;
+        this.usuario = usuario;
     }
 
     public Long getId() {
@@ -87,5 +92,13 @@ public class Produto {
 
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }
