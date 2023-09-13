@@ -1,18 +1,20 @@
-# GamesHub 
+# GamesHub
 
-Este projeto é parte do curso "Desenvolvedor Java Full Stack" oferecido pela Generation Brasil, e tem como objetivo proporcionar um ambiente de aprendizado para o desenvolvimento de aplicações web utilizando a linguagem Java e o framework Spring Boot. O projeto GamesHub simula uma loja virtual de games, com funcionalidades básicas de cadastro, busca, atualização e exclusão de produtos e categorias.
+Este projeto faz parte do curso "Desenvolvedor Java Full Stack" oferecido pela Generation Brasil, com o objetivo de proporcionar um ambiente de aprendizado para o desenvolvimento de aplicações web utilizando a linguagem Java e o framework Spring Boot. O projeto GamesHub simula uma loja virtual de games, com funcionalidades básicas de cadastro, busca, atualização e exclusão de produtos e categorias.
 
 ## Estrutura do Projeto
 
 O projeto está organizado em pacotes que seguem as boas práticas de arquitetura de software e padrões do Spring Boot:
 
-- **Controller**: Contém as classes que implementam os endpoints da API, ou seja, são responsáveis por receber as requisições HTTP e direcioná-las para os serviços adequados. Neste projeto, temos os controladores `CategoriaController` e `ProdutoController`.
+- **Controller**: Contém as classes que implementam os endpoints da API, direcionando as requisições HTTP para os serviços adequados. Neste projeto, temos os controladores `CategoriaController` e `ProdutoController`.
 
-- **Models**: Aqui estão as classes que representam os objetos do domínio da aplicação, ou seja, as entidades que serão persistidas no banco de dados. No projeto, temos as classes `Categoria` e `Produto`.
+- **Models**: Aqui estão as classes que representam os objetos do domínio da aplicação, ou seja, as entidades que serão persistidas no banco de dados. No projeto, temos as classes `Categoria`, `Produto`, `Login`, e `Usuario`.
 
-- **Repository**: Contém as interfaces que estendem o `JpaRepository` do Spring Data JPA, permitindo a realização de operações de persistência no banco de dados. No projeto, temos os repositórios `CategoriaRepository` e `ProdutoRepository`.
+- **Repository**: Contém as interfaces que estendem o `JpaRepository` do Spring Data JPA, permitindo a realização de operações de persistência no banco de dados. No projeto, temos os repositórios `CategoriaRepository`, `ProdutoRepository`, e `UsuarioRepository`.
 
-- **Service**: Neste pacote, estão as classes que implementam a lógica de negócio da aplicação. Os serviços `CategoriaService` e `ProdutoService` realizam operações como criar, atualizar, buscar e excluir produtos e categorias.
+- **Service**: Neste pacote, estão as classes que implementam a lógica de negócio da aplicação. Os serviços `CategoriaService`, `ProdutoService`, e `UsuarioService` realizam operações como criar, atualizar, buscar e excluir produtos, categorias, e usuários.
+
+- **Security**: Contém as classes relacionadas à segurança da aplicação, como autenticação e geração de tokens JWT. As classes `JwtService`, `JwtAuthFilter`, `UserDetailsImpl`, `UserDetailsServiceImpl`, e `BasicSecurityConfig` estão relacionadas à segurança.
 
 - **Resources**: Este é o diretório onde você encontra os arquivos de configuração da aplicação, como o `application.properties` para configurações do banco de dados e outros recursos.
 
@@ -20,22 +22,66 @@ O projeto está organizado em pacotes que seguem as boas práticas de arquitetur
 
 ### CategoriaController
 
-- **GET /categoria/{id}**: Retorna uma categoria específica com base no ID.
-- **GET /categoria**: Retorna todas as categorias cadastradas.
-- **POST /categoria**: Cria uma nova categoria.
-- **PUT /categoria/{id}**: Atualiza os dados de uma categoria com base no ID.
-- **DELETE /categoria/{id}**: Exclui uma categoria com base no ID.
-- **GET /categoria/ativos**: Retorna todas as categorias ativas.
+- `GET /categoria/{id}`: Retorna uma categoria específica com base no ID.
+- `GET /categoria`: Retorna todas as categorias cadastradas.
+- `POST /categoria`: Cria uma nova categoria.
+- `PUT /categoria/{id}`: Atualiza os dados de uma categoria com base no ID.
+- `DELETE /categoria/{id}`: Exclui uma categoria com base no ID.
+- `GET /categoria/ativos`: Retorna todas as categorias ativas.
 
 ### ProdutoController
 
-- **GET /produto/{id}**: Retorna um produto específico com base no ID.
-- **GET /produto**: Retorna todos os produtos cadastrados.
-- **POST /produto**: Cria um novo produto.
-- **PUT /produto/{id}**: Atualiza os dados de um produto com base no ID.
-- **DELETE /produto/{id}**: Exclui um produto com base no ID.
-- **GET /produto/distribuidores**: Retorna produtos com base no distribuidor (fluxo feito pelo `RequestBody` para aprendizado).
-- **GET /produto/categoria/{categoria}**: Retorna produtos com base na categoria informada.
+- `GET /produto/{id}`: Retorna um produto específico com base no ID.
+- `GET /produto`: Retorna todos os produtos cadastrados.
+- `POST /produto`: Cria um novo produto.
+- `PUT /produto/{id}`: Atualiza os dados de um produto com base no ID.
+- `DELETE /produto/{id}`: Exclui um produto com base no ID.
+- `GET /produto/distribuidores`: Retorna produtos com base no distribuidor (fluxo feito pelo RequestBody para aprendizado).
+- `GET /produto/categoria/{categoria}`: Retorna produtos com base na categoria informada.
+
+### UsuarioController
+
+- **GET /usuarios/all**
+  - **Descrição:** Retorna todos os usuários cadastrados.
+  - **Resposta:**
+    - Código de status 200 OK.
+    - Lista de objetos `Usuario`.
+
+- **GET /usuarios/{id}**
+  - **Descrição:** Retorna um usuário específico com base no ID.
+  - **Parâmetros:**
+    - `id` (Path Variable): ID do usuário.
+  - **Resposta:**
+    - Código de status 200 OK se encontrado.
+    - Código de status 404 Not Found se não encontrado.
+    - Objeto `Usuario`.
+
+- **POST /usuarios/logar**
+  - **Descrição:** Autentica um usuário com base nas credenciais fornecidas.
+  - **Corpo da Requisição:**
+    - Objeto `Login` contendo credenciais do usuário.
+  - **Resposta:**
+    - Código de status 200 OK se autenticado com sucesso.
+    - Código de status 401 Unauthorized se a autenticação falhar.
+    - Objeto `Login` com token de autenticação.
+
+- **POST /usuarios/cadastrar**
+  - **Descrição:** Cria um novo usuário.
+  - **Corpo da Requisição:**
+    - Objeto `Usuario` contendo informações do novo usuário.
+  - **Resposta:**
+    - Código de status 201 Created se o usuário for criado com sucesso.
+    - Código de status 400 Bad Request se houver erros nos dados fornecidos.
+    - Objeto `Usuario` criado.
+
+- **PUT /usuarios/atualizar**
+  - **Descrição:** Atualiza os dados de um usuário com base no ID.
+  - **Corpo da Requisição:**
+    - Objeto `Usuario` contendo os dados atualizados.
+  - **Resposta:**
+    - Código de status 200 OK se atualizado com sucesso.
+    - Código de status 404 Not Found se o usuário não for encontrado.
+    - Objeto `Usuario` atualizado.
 
 ## Configuração do Projeto
 
